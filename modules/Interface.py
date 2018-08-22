@@ -67,10 +67,16 @@ class Interface:
         self.addString(initX, line, title)
         self.refresh()
 
-    def draw(self, points, cursor):
+    def draw(self, points, cursor, char='o'):
         (x, y) = cursor.getCoordinates()
         for point in points:
-            self.addString(point.x, point.y, "o")
+            self.addString(point.x, point.y, char)
+        cursor.goto(x, y)
+        self.refresh()
+
+    def drawPoint(self, point, cursor, char='o'):
+        (x, y) = cursor.getCoordinates()
+        self.addString(point.x, point.y, char)
         cursor.goto(x, y)
         self.refresh()
         

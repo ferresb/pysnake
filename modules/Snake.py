@@ -23,6 +23,9 @@ class Snake:
     def getCoordinates(self):
         return self.__cursor.getCoordinates()
 
+    def getPoints(self):
+        return self.__points.getPoints()
+
     def getDirection(self):
         (x, y) = (self.__points.head.x, self.__points.head.y)
         (ox, oy) = (self.__points.head.next.x, self.__points.head.next.y)
@@ -46,7 +49,8 @@ class Snake:
             raise GameOver("a collision occured")
         self.__cursor.move(direction)
         self.__points.addElemFirst(Point(self.__cursor.getX(), self.__cursor.getY()))
-        interface.clearPoint(self.__cursor, self.__points.tail.x, self.__points.tail.y)
+        self.__points.tail.erase(interface, self.__cursor)
+        #interface.clearPoint(self.__cursor, self.__points.tail.x, self.__points.tail.y)
         self.__points.remElemLast()
 
 # Display
