@@ -7,3 +7,9 @@ class Point:
 
     def getXY(self):
         return (self.x, self.y)
+
+    def isEqual(self, point):
+        if self.x == point.x and self.y == point.y:
+            return True
+        else:
+            return False

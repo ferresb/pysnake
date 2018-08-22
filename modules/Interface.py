@@ -3,8 +3,9 @@ import curses
 from modules.Cursor import Cursor
 
 class Interface:
-    def __init__(self):
+    def __init__(self, delay=250):
         self.__screen = curses.initscr()
+        self.__screen.timeout(delay)
         curses.noecho()
         curses.cbreak()
         (maxX, maxY) = self.getDim()
