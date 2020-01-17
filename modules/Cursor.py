@@ -1,5 +1,8 @@
 #!/bin/python
+from modules.Utils import *
+
 from modules.CustomException import CursorError
+from modules.Point import Point
 
 class Cursor:
     def __init__(self, screen, maxdim=(-1, -1), mindim=(0, 0)):
@@ -29,6 +32,10 @@ class Cursor:
     def getY(self):
         return self.__y
 
+    def getPoint(self):
+        return Point(self.__x, self.__y)
+
+
 # Set dimensions for available moves
     def setMaxX(self, x):
         self.__maxx = x
@@ -45,38 +52,38 @@ class Cursor:
 # Relative movements
     def move(self, direction):
         self.__actualize()
-        if direction == "UP":
+        if direction == Direction.UP:
             if self.__y > self.__miny:
                 self.__y -= 1
-        elif direction == "DOWN":
+        elif direction == Direction.DOWN:
             if self.__y < self.__maxy - 1:
                 self.__y += 1
-        elif direction == "LEFT":
+        elif direction == Direction.LEFT:
             if self.__x > self.__minx:
                 self.__x -= 1
-        elif direction == "RIGHT":
+        elif direction == Direction.RIGHT:
             if self.__x < self.__maxx - 1:
                 self.__x += 1
         else:
-            raise CursorException("Direction unknown : {}".format(direction))
+            raise CursorError("Direction unknown : {}".format(direction))
         self.__refresh()
 
     def isOutOfBound(self, direction):
         self.__actualize()
-        if direction == "UP":
+        if direction == Direction.UP:
             if self.__y > self.__miny:
                 return False
-        elif direction == "DOWN":
+        elif direction == Direction.DOWN:
             if self.__y < self.__maxy - 1:
                 return False
-        elif direction == "LEFT":
+        elif direction == Direction.LEFT:
             if self.__x > self.__minx:
                 return False
-        elif direction == "RIGHT":
+        elif direction == Direction.RIGHT:
             if self.__x < self.__maxx - 1:
                 return False
         else:
-            raise CursorException("Direction unknown : {}".format(direction))
+            raise CursorError("Direction unknown : {}".format(direction))
         return True
 
 # Absolute movements

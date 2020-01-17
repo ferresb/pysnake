@@ -1,8 +1,8 @@
 class LinkedList:
-    def __init__(self, point):
+    def __init__(self, point=None):
         self.head = point
         self.tail = point
-        self.__length = 1
+        self.__length = 1 if point != None else 0
 
     def addElemLast(self, point):
         self.tail.next = point

@@ -1,14 +1,16 @@
+from modules.Utils import *
+
 from modules.Cursor import Cursor
 from modules.Point import Point
 from modules.LinkedList import LinkedList
 
-from modules.CustomException import GameOver
-from modules.CustomException import MoveImpossible
+from modules.CustomException import *
 
 class Snake:
-    def __init__(self, cursor, length=3):
+    def __init__(self, cursor, apples, length=3):
         self.__cursor = cursor
         self.__points = LinkedList(Point(cursor.getX(), cursor.getY()))
+        self.__apples = apples
         #Manage length too long
         for i in range (1, length):
             self.__points.addElemLast(Point(cursor.getX()-i, cursor.getY()))
@@ -32,11 +34,11 @@ class Snake:
 
         if (x == ox):
             if (y > oy):
-                return "DOWN"
-            return "UP"
+                return Direction.DOWN
+            return Direction.UP
         elif (x > ox):
-            return "RIGHT"
-        return "LEFT"
+            return Direction.RIGHT
+        return Direction.LEFT
 
 # Movements
     def move(self, interface, direction=None):
@@ -48,6 +50,7 @@ class Snake:
         if self.__willCollide(direction):
             raise GameOver("a collision occured")
         self.__cursor.move(direction)
+        self.__removeCollisionIfExists()
         self.__points.addElemFirst(Point(self.__cursor.getX(), self.__cursor.getY()))
         self.__points.tail.erase(interface, self.__cursor)
         #interface.clearPoint(self.__cursor, self.__points.tail.x, self.__points.tail.y)
@@ -58,6 +61,15 @@ class Snake:
         interface.draw(self.__points.getPoints(), self.__cursor)
 
 # Logic
+    def __removeCollisionIfExists(self):
+        if (self.__apples== None):
+            return False
+        for p in self.__apples:
+            if p.isEqual(self.__cursor.getPoint()):
+                self.__apples.pop(p)
+                return True
+        return False
+
     def __isGoingBack(self, direction):
         p = self.__calcPoint(direction)
         if p.isEqual(self.__points.head.next):
@@ -66,21 +78,18 @@ class Snake:
 
     def __willCollide(self, direction):
         p = self.__calcPoint(direction)
-        for point in self.__points.getPoints():
-            if point.isEqual(p):
-                return True
-        return False
+        return p.belongs(self.__points.getPoints())
 
     def __calcPoint(self, direction):
         (x, y) = self.__cursor.getCoordinates()
-        if direction == "UP":
+        if direction == Direction.UP:
             y -= 1
-        elif direction == "DOWN":
+        elif direction == Direction.DOWN:
             y += 1
-        elif direction == "LEFT":
+        elif direction == Direction.LEFT:
             x -= 1
-        elif direction == "RIGHT":
+        elif direction == Direction.RIGHT:
             x += 1
         else:
-            raise CursorException("Direction unknown : {}".format(direction))
+            raise CursorError("Direction unknown : {}".format(direction))
         return Point(x, y)
