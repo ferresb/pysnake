@@ -7,10 +7,11 @@ from modules.LinkedList import LinkedList
 from modules.CustomException import *
 
 class Snake:
-    def __init__(self, cursor, apples, length=3):
+    def __init__(self, cursor, apples, interface, length=3):
         self.__cursor = cursor
         self.__points = LinkedList(Point(cursor.getX(), cursor.getY()))
         self.__apples = apples
+        self.__interface = interface
         #Manage length too long
         for i in range (1, length):
             self.__points.addElemLast(Point(cursor.getX()-i, cursor.getY()))
@@ -41,7 +42,7 @@ class Snake:
         return Direction.LEFT
 
 # Movements
-    def move(self, interface, direction=None):
+    def move(self, direction=None):
         direction = direction if direction != None else self.getDirection()
         if self.__cursor.isOutOfBound(direction):
             raise GameOver("you reached game border")
@@ -50,23 +51,22 @@ class Snake:
         if self.__willCollide(direction):
             raise GameOver("a collision occured")
         self.__cursor.move(direction)
-        self.__removeCollisionIfExists()
+        if (not self.__removeCollisionIfExists()):
+            self.__points.tail.erase(self.__interface, self.__cursor)
+            self.__points.remElemLast()
         self.__points.addElemFirst(Point(self.__cursor.getX(), self.__cursor.getY()))
-        self.__points.tail.erase(interface, self.__cursor)
-        #interface.clearPoint(self.__cursor, self.__points.tail.x, self.__points.tail.y)
-        self.__points.remElemLast()
 
 # Display
-    def draw(self, interface):
-        interface.draw(self.__points.getPoints(), self.__cursor)
+    def draw(self):
+        self.__interface.draw(self.__points.getPoints(), self.__cursor)
 
 # Logic
     def __removeCollisionIfExists(self):
-        if (self.__apples== None):
+        if (self.__apples == None):
             return False
-        for p in self.__apples:
+        for p in self.__apples.get():
             if p.isEqual(self.__cursor.getPoint()):
-                self.__apples.pop(p)
+                self.__apples.remove(p)
                 return True
         return False
 

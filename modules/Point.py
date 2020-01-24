@@ -5,6 +5,10 @@ class Point:
         self.next = None
         self.prev = None
 
+    def copy(p):
+        (x, y) = p.getXY()
+        return Point(x, y)
+
     def getXY(self):
         return (self.x, self.y)
 
