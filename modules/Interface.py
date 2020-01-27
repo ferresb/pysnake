@@ -1,28 +1,31 @@
 #!/bin/python
 import curses
 from modules.Cursor import Cursor
+from modules.Utils import *
 
 class Interface:
-    def __init__(self, delay=250):
+    def __init__(self, xDim=None, yDim=None, delay=250):
         self.__screen = curses.initscr()
         self.__screen.timeout(delay)
         curses.noecho()
         curses.cbreak()
-        (maxX, maxY) = self.getDim()
+        (maxX, maxY) = self.__getDim()
+        self.__maxX = xDim if xDim != None else maxX
+        self.__maxY = yDim if yDim != None else maxY
 
     def initCursor(self, maxDim=(-1, -1), minDim=(0, 0)):
         return Cursor(self.__screen, maxDim, minDim)
 
 # Clear functions
     def clearScreen(self):
-        (y, x) = self.__screen.getmaxyx()
+        (y, x) = self.getDim()
         for i in range(0, x-1):
             for j in range(0, y-1):
                 self.addString(i, j, " ")
         self.refresh()
     
     def clearLine(self, line, bpos=0, epos=-1):
-        (y, x) = self.__screen.getmaxyx()
+        (y, x) = self.getDim()
         if line > y-1:
             return
         if epos == -1:
@@ -67,6 +70,12 @@ class Interface:
         self.addString(initX, line, title)
         self.refresh()
 
+    def writeAt(self, text, x, y, current):
+        (baseX, baseY) = current
+        self.addString(x, y, text)
+        self.addString(baseX, baseY, "")
+        self.refresh()
+
     def draw(self, points, cursor, char='o'):
         (x, y) = cursor.getCoordinates()
         for point in points:
@@ -85,7 +94,11 @@ class Interface:
         return self.__screen.getch()
 
     def getDim(self):
+        return (self.__maxX, self.__maxY)
+
+    def __getDim(self):
         (maxY, maxX) = self.__screen.getmaxyx()
+        maxX = maxX - 30
         return (maxX, maxY)
 
 # Lifecycle

@@ -12,15 +12,12 @@ class PointArray:
     def remove(self,p):
         for point in self.__points:
             if point.isEqual(p):
-                logger.info("Removed point" + str(point.getXY()))
                 self.__points.remove(point)
-                self.log("Array is now")
 
     def get(self):
         return self.__points
 
     def len(self):
-        logger.info("Array len is now "+str(len(self.__points)))
         return len(self.__points)
 
     def log(self, title):

@@ -7,11 +7,12 @@ from modules.LinkedList import LinkedList
 from modules.CustomException import *
 
 class Snake:
-    def __init__(self, cursor, apples, interface, length=3):
+    def __init__(self, cursor, apples, interface, score, length=3):
         self.__cursor = cursor
         self.__points = LinkedList(Point(cursor.getX(), cursor.getY()))
         self.__apples = apples
         self.__interface = interface
+        self.__score    = score
         #Manage length too long
         for i in range (1, length):
             self.__points.addElemLast(Point(cursor.getX()-i, cursor.getY()))
@@ -54,6 +55,8 @@ class Snake:
         if (not self.__removeCollisionIfExists()):
             self.__points.tail.erase(self.__interface, self.__cursor)
             self.__points.remElemLast()
+        else:
+            self.__score.increment()
         self.__points.addElemFirst(Point(self.__cursor.getX(), self.__cursor.getY()))
 
 # Display
