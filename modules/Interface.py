@@ -10,8 +10,8 @@ class Interface:
         curses.noecho()
         curses.cbreak()
         (maxX, maxY) = self.__getDim()
-        self.__maxX = xDim if xDim != None else maxX
-        self.__maxY = yDim if yDim != None else maxY
+        self.__maxX = min(xDim, maxX) if xDim != None else maxX
+        self.__maxY = min(yDim, maxY) if yDim != None else maxY
 
     def initCursor(self, maxDim=(-1, -1), minDim=(0, 0)):
         return Cursor(self.__screen, maxDim, minDim)
